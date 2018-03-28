@@ -1,6 +1,6 @@
 #include <SimpleTimer.h>
-#include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
+
 
 // Set the LCD address to 0x27 for a 16 chars and 2 line display
 LiquidCrystal_I2C lcd(0x27, 16, 3);
@@ -8,6 +8,10 @@ LiquidCrystal_I2C lcd(0x27, 16, 3);
 const int diSwHelkBout = 2;
 const int aiVrXHelkBout = A0;
 const int aiVrYHelkBout = A1;
+SimpleTimer timer;
+
+
+int timer1;
 
 void setup() {
   pinMode(diSwHelkBout, INPUT);
@@ -18,15 +22,14 @@ void setup() {
   lcd.begin();
 
   // Turn on the blacklight and print a message.
-  lcd.backlight();
+  lcd.backlight(); 
 
-
- 
 }
 
 void loop() {
+splashScreen();
 
-  joystickRemote();
+
 
   if (Serial.available()) {
     // Wait a bit for the entire message to arrive
@@ -42,6 +45,7 @@ void loop() {
 }
 
 void joystickRemote(){
+  lcd.clear();
   if(analogRead(aiVrXHelkBout) < 250){
     Serial.println("Ik moet naar boven");
     clearJoystickPos();
@@ -86,6 +90,13 @@ void joystickBot(){
 
 
 void splashScreen(){
+  timer.run();
+  timer1 = timer.setTimer(5000, joystickRemote, 1);
+
+  if(timer.isEnabled(timer1)) {
+     lcd.clear();
+  }
+
   lcd.setCursor(0, 0);
   lcd.print("Astroidinator V1");
  
