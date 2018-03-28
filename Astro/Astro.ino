@@ -20,13 +20,13 @@ void setup() {
   // Turn on the blacklight and print a message.
   lcd.backlight();
 
-
+splashScreen();
  
 }
 
 void loop() {
 
-  joystickRemote();
+ // joystickRemote();
 
   if (Serial.available()) {
     // Wait a bit for the entire message to arrive
