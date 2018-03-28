@@ -1,10 +1,9 @@
-
-
+#include <SimpleTimer.h>
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
 // Set the LCD address to 0x27 for a 16 chars and 2 line display
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 3);
 
 const int diSwHelkBout = 2;
 const int aiVrXHelkBout = A0;
@@ -20,21 +19,14 @@ void setup() {
 
   // Turn on the blacklight and print a message.
   lcd.backlight();
-  lcd.print("Haffoo Productions");
+
+
+ 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.print("Switch:  ");
-  Serial.print(digitalRead(diSwHelkBout));
-  Serial.print("\n");
-  Serial.print("X-axis: ");
-  Serial.print(analogRead(aiVrXHelkBout));
-  Serial.print("\n");
-  Serial.print("Y-axis: ");
-  Serial.println(analogRead(aiVrYHelkBout));
-  Serial.print("\n\n");
-  delay(500);
+
+  joystickRemote();
 
   if (Serial.available()) {
     // Wait a bit for the entire message to arrive
@@ -47,6 +39,64 @@ void loop() {
       lcd.write(Serial.read());
     }
   }
+}
+
+void joystickRemote(){
+  if(analogRead(aiVrXHelkBout) < 250){
+    Serial.println("Ik moet naar boven");
+    clearJoystickPos();
+    joystickTop();
+  }
+  if(analogRead(aiVrXHelkBout) > 750 && analogRead(aiVrXHelkBout) < 1000){
+    Serial.println("Ik moet naar beneden");
+    clearJoystickPos();
+    joystickBot();
+  }
+  if(analogRead(aiVrXHelkBout) > 400 && analogRead(aiVrXHelkBout) < 600){
+    Serial.println("Ik moet naar midden");
+    clearJoystickPos();
+    joystickMid();
+  }
+}
+
+void clearJoystickPos(){
+  lcd.setCursor(0, 0);
+  lcd.print(" ");
+
+  lcd.setCursor(0, 1);
+  lcd.print(" ");
+
+  lcd.setCursor(0, 2);
+  lcd.print(" ");
+}
+
+void joystickTop(){
+  lcd.setCursor(0, 0);
+  lcd.print("(");
+}
+void joystickMid(){
+  lcd.setCursor(0, 1);
+  lcd.print("(");
+}
+void joystickBot(){
+  lcd.setCursor(0, 2);
+  lcd.print("(");
+}
+
+
+
+void splashScreen(){
+  lcd.setCursor(0, 0);
+  lcd.print("Astroidinator V1");
+ 
+  lcd.setCursor(0, 1);
+  lcd.print("Gemaakt door:");
+
+  lcd.setCursor(0, 2);
+  lcd.print("Hafiz");
+
+  lcd.setCursor(0, 3);
+  lcd.print("Bram");
 }
 
 
